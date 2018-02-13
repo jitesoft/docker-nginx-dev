@@ -3,8 +3,9 @@
 CERT_NAME=${SERVER_NAME}.crt
 KEY_NAME=${SERVER_NAME}.key
 
-CERT_PATH="/etc/ssl/${CERT_NAME}"
-KEY_PATH="/etc/ssl/${KEY_NAME}"
+SSL_PATH="/etc/ssl"
+CERT_PATH="${SSL_PATH}/${CERT_NAME}"
+KEY_PATH="${SSL_PATH}/${KEY_NAME}"
 
 if [[ -e "${KEY_PATH}" ]]; then
     if [[ $(find "${KEY_PATH}" -mtime +360 -print) ]]; then
@@ -15,11 +16,11 @@ if [[ -e "${KEY_PATH}" ]]; then
     fi
 fi
 
-if [[ ! -e /etc/ssl/cert.key ]]; then
+if [[ ! -e ${KEY_PATH} ]]; then
     echo "Generating new TLS certificate and key."
-    if [[ ! -d /etc/ssl ]]; then
+    if [[ ! -d "${SSL_PATH}" ]]; then
         echo "Creating directory for certificate."
-        mkdir -p /etc/ssl
+        mkdir -p ${SSL_PATH}
     fi
 
     openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=${SERVER_NAME}" -keyout ${KEY_PATH} -out ${CERT_PATH}
@@ -33,7 +34,7 @@ fi
 export KEY_PATH=${KEY_PATH}
 export CERT_PATH=${CERT_PATH}
 
-envsubst '$PORT $FPM_CONTAINER $SERVER_NAME $SERVER_ROOT $MAX_BODY_SIZE $CERT_PATH $KEY_PATH' < /tmp/conf.template > /etc/nginx/conf.d/default.conf
+envsubst '$FPM_PORT $FPM_CONTAINER $SERVER_NAME $SERVER_ROOT $MAX_BODY_SIZE $CERT_PATH $KEY_PATH' < /tmp/conf.template > /etc/nginx/conf.d/default.conf
 
 unset KEY_PATH
 unset CERT_PATH

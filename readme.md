@@ -1,10 +1,11 @@
 # Development container with alpine linux and NGINX for PHP-fpm
 
-A container - built from the nginx:alpine container - which automatically generates certificates and have a nginx configuration set up for a FPM fast-cgi container.
+A container - built from the nginx:alpine container - which automatically generates certificates and have a nginx configuration set up for a FPM fast-cgi container.  
 
 ## Observe
 
-This container should not be used as a production container, it's strictly made to quickly set up a nginx container with a self signed tls cert and connect to a fpm container.
+1. This container should not be used as a production container, it's strictly made to quickly set up a nginx container with a self signed tls cert and connect to a fpm container.
+2. The certificate used for https is self signed, this means that it will produce a security alert in the browser, be sure to add an exception to the cert and it should work as intended.
 
 ## Run
 

@@ -1,0 +1,15 @@
+image: docker:latest
+
+variables:
+  IMAGE_NAME: "jitesoft/nginx-dev"
+
+build and deploy:
+  stage: deploy
+  before_script:
+    - docker login -u $HUB_USER -p $HUB_PW
+    - docker pull nginx:alpine
+  script:
+    - docker build -t jitesoft/nginx-dev
+    - docker push jitesoft/nginx-dev:latest
+  after_script:
+    - docker logout
